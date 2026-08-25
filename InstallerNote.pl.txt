@@ -1,0 +1,1 @@
+ta wiadomość będzie wyświetlana podczas instalacji
