@@ -2,8 +2,6 @@
 
 A very lightweight C++ program that brings back the **Shut down** and **Restart** options to the Start menu when Windows Update would otherwise replace them with **Update and shut down** and **Update and restart**.
 
-🇬🇧 🇺🇸 English | [🇵🇱 Polski](README.pl.md)
-
 ![Banner](.github/img/banner.png)
 
 ## How it works
