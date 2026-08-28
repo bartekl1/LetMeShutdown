@@ -31,7 +31,7 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 DefaultGroupName={#MyAppName}
 LicenseFile=LICENSE
-InfoBeforeFile=InstallerNote.txt
+; InfoBeforeFile=InstallerNote.txt
 ; Uncomment the following line to run in non administrative install mode (install for current user only).
 ;PrivilegesRequired=lowest
 OutputDir=Output
@@ -42,7 +42,8 @@ DisableWelcomePage=no
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
-Name: "polish"; MessagesFile: "compiler:Languages\Polish.isl"; InfoBeforeFile: "InstallerNote.pl.txt"
+; Name: "polish"; MessagesFile: "compiler:Languages\Polish.isl"; InfoBeforeFile: "InstallerNote.pl.txt"
+Name: "polish"; MessagesFile: "compiler:Languages\Polish.isl"
 
 [Files]
 Source: "{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion

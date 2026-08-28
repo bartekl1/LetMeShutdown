@@ -1,2 +1,0 @@
-this will be shown during installation
-test, some changes
