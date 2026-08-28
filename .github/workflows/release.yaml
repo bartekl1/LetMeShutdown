@@ -1,0 +1,101 @@
+name: Build and publish program and installer when release is published
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-program:
+    runs-on: windows-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Build program .exe
+        run: |
+            g++ main.cpp -o LetMeShutdown.exe -mwindows
+    
+      - name: Upload program artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: program-exe
+          path: LetMeShutdown.exe
+          retention-days: 1
+
+  build-installer:
+    runs-on: windows-latest
+    needs: build-program
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      
+      - name: Download program artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: program-exe
+
+      - name: Build installer .exe
+        run: |
+            iscc setup.iss
+    
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: installer
+          path: Output/LetMeShutdown-Setup.exe
+          retention-days: 1
+    
+  release:
+    runs-on: ubuntu-latest
+    needs: build-installer
+
+    permissions:
+      contents: write
+      attestations: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      
+      - name: Download program artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: program-exe
+      
+      - name: Download installer artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: installer
+      
+      - name: Rename files
+        run: |
+          mv LetMeShutdown.exe LetMeShutdown-${{ github.ref_name }}.exe
+          mv LetMeShutdown-Setup.exe LetMeShutdown-setup-${{ github.ref_name }}.exe
+      
+      - name: Generate artifact attestation for program
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: LetMeShutdown-${{ github.ref_name }}.exe
+      
+      - name: Generate artifact attestation for installer
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: LetMeShutdown-setup-${{ github.ref_name }}.exe
+      
+      - name: Upload files to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            LetMeShutdown-${{ github.ref_name }}.exe
+            LetMeShutdown-setup-${{ github.ref_name }}.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
